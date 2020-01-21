@@ -33,15 +33,17 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class		instance	title			tags mask	isfloating	monitor */
+	{ "Nnn",		NULL,		NULL,			1 << 0,		0,		-1 },
         { "Gimp",               NULL,           NULL,                   1 << 3,         0,              -1 },
         { "Firefox",		NULL,           NULL,                   1 << 1,         0,              -1 },
-        { "Surf",               NULL,           NULL,                   1 << 1,         0,              -1 },
+        { "Vivaldi-stable",	NULL,           NULL,                   1 << 1,         0,              -1 },
         { "Galculator",         NULL,           NULL,                   0,              1,              -1 },
         { "Openshot",           NULL,           NULL,                   1 << 3,         0,              -1 },
         { "Telegram",           NULL,           NULL,                   1 << 2,         0,              -1 },
         { "Lxappearance",       NULL,           NULL,                   0,              1,              -1 },
         { "Thunderbird",        NULL,           NULL,                   1 << 2,         0,              -1 },
         { "Thunderbird",        NULL,           "Filtros de mensajes",  1 << 2,         1,              -1 },
+	{ "Pavucontrol",	NULL,		NULL,			0,		1,		-1 },
 
 };
 
@@ -75,8 +77,10 @@ static const char *termcmd[]  = { "st", "-t", "Enter the Void", NULL };
 
 /* Comandos personalizados */
 static const char       *menucmd[]		= { "menu-apagar", NULL };
+static const char	*nnncmd[]		= { "st", "-c", "nnn", "-t", "Gestor de archivos", "-e", "nnn", "-d", NULL };
 static const char       *screenshotcmd[]	= { "screenshot", NULL };
 static const char       *firefoxcmd[]		= { "firefox", NULL };
+static const char       *vivaldicmd[]		= { "vivaldi-stable", NULL };
 static const char       *telegramcmd[]		= { "Telegram", NULL };
 static const char       *gimpcmd[]		= { "gimp", NULL };
 static const char       *openshotcmd[]		= { "openshot", NULL };
@@ -85,14 +89,14 @@ static const char       scratchpadname[]	= "scratchpad";
 static const char       *scratchpadcmd[]	= { "st", "-t", "scratchpad", "-g", "140x40+400+220", NULL };
 
 /*      Control de volumen ALSA         */
-//static const char       *mutecmd[]      = { "amixer", "-q", "set", "Master", "toggle", NULL };
-//static const char       *volupcmd[]     = { "amixer", "-q", "set", "Master", "2%+", "unmute", NULL };
-//static const char       *voldowncmd[]   = { "amixer", "-q", "set", "Master", "2%-", "unmute", NULL };
+static const char       *mutecmd[]      = { "amixer", "-q", "set", "Master", "toggle", NULL };
+static const char       *volupcmd[]     = { "amixer", "-q", "set", "Master", "2%+", "unmute", NULL };
+static const char       *voldowncmd[]   = { "amixer", "-q", "set", "Master", "2%-", "unmute", NULL };
 
 /*      Control de Voumen PulseAudio    */
-static const char	*mutecmd[]	= { "pactl", "set-sink-mute", "0", "toggle", NULL };
-static const char	*volupcmd[]	= { "pactl", "set-sink-volume", "0", "+2%", NULL };
-static const char	*voldowncmd[]	= { "pactl", "set-sink-volume", "0", "-2%", NULL };
+//static const char	*mutecmd[]	= { "pactl", "set-sink-mute", "0", "toggle", NULL };
+//static const char	*volupcmd[]	= { "pactl", "set-sink-volume", "0", "+2%", NULL };
+//static const char	*voldowncmd[]	= { "pactl", "set-sink-volume", "0", "-2%", NULL };
 
 /*      Control del brillo de pantalla  */
 //static const char *brightnessup[] = { "xbacklight", "-inc", "1.5"};
@@ -128,8 +132,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 
 /* Atajos personalizados */
-        { MODKEY,                       XK_F2,                          spawn,          {.v = firefoxcmd } },
-        { ControlMask,                  XK_F2,                          spawn,          SHCMD("tabbed -cr 2 surf -pe x -z 0.75 duck.com") },
+        { MODKEY,                       XK_F1,                          spawn,          {.v = nnncmd } },
+        { MODKEY,                       XK_F2,                          spawn,          {.v = vivaldicmd } },
+        { ControlMask,                  XK_F2,                          spawn,          {.v = firefoxcmd } },
         { MODKEY,                       XK_F3,                          spawn,          {.v = telegramcmd } },
         { MODKEY,                       XK_F4,                          spawn,          {.v = gimpcmd } },
         { MODKEY,                       XK_F5,                          spawn,          {.v = openshotcmd } },
@@ -139,6 +144,7 @@ static Key keys[] = {
 
 /*      Modos de captura de pantalla    */
         { 0,                            XK_Print,                       spawn,          SHCMD("scrot /tmp/'%F_%T.png' -e 'xclip -selection c -t image/png < $f'") }, // Captura de pantalla en el portapapeles
+        { ShiftMask,                    XK_Print,                       spawn,          SHCMD("sleep 1; scrot -s /tmp/'%F_%T.png' -e 'xclip -selection c -t image/png < $f'") }, // Captura de área seleccionada en el portapapeles
         { ControlMask,                  XK_Print,                       spawn,          SHCMD("scrot -q 100 '%F_%H%M%S_$wx$h.png' -e 'mv $f /home/skynet/Datos/Capturas/'; sleep 1; exec notify-send -t 5000 --icon=/home/skynet/.icons/screenshot.png 'Captura de pantalla' 'guardada en: ~/Datos/Capturas'") },
         { MODKEY|ShiftMask,             XK_Print,                       spawn,          SHCMD("scrot -u -q 100 'Focus_%F_%H%M%S_$wx$h.png' -e 'mv $f /home/skynet/Datos/Capturas/focus'; sleep 1; exec notify-send -t 5000 --icon=/home/skynet/.icons/window.png 'Ventana enfocada' 'guardada en: ~/Datos/Capturas/focus'") },
 					
